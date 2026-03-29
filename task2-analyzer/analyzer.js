@@ -11,7 +11,7 @@
 
 const https = require("https");
 
-//  CONFIG 
+//  CONFIG
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || ""; // optional but recommended
 const REPO_INPUT = process.argv[2]; // e.g. "c2siorg/Webiu"
@@ -25,7 +25,7 @@ if (!REPO_INPUT || !REPO_INPUT.includes("/")) {
 
 const [OWNER, REPO] = REPO_INPUT.split("/");
 
-//  GITHUB API HELPER 
+//  GITHUB API HELPER
 
 function githubRequest(path) {
   return new Promise((resolve, reject) => {
@@ -57,13 +57,12 @@ function githubRequest(path) {
   });
 }
 
-//  SCORING FUNCTIONS 
+//  SCORING FUNCTIONS
 
 /**
- * ACTIVITY SCORE (0–100)
+ * ACTIVITY SCORE (0-100)
  * Based on: recent commits, open issues, stars, forks, last push date
  */
-
 
 function calculateActivityScore(repo, recentCommits) {
   let score = 0;
@@ -91,12 +90,10 @@ function calculateActivityScore(repo, recentCommits) {
   return Math.round(Math.min(score, 100));
 }
 
-
 /**
- * COMPLEXITY SCORE (0–100)
+ * COMPLEXITY SCORE (0-100)
  * Based on: language count, codebase size, open issues, contributors, topics
  */
-
 
 function calculateComplexityScore(repo, languages, contributors) {
   let score = 0;
@@ -120,26 +117,26 @@ function calculateComplexityScore(repo, languages, contributors) {
   return Math.round(Math.min(score, 100));
 }
 
-
 /**
  * LEARNING DIFFICULTY (derived from activity + complexity)
  * Returns: Beginner / Intermediate / Advanced / Expert
+ * FIX: now returns combined score alongside level so the
+ * output section can reference it without recalculating
  */
-
 
 function estimateLearningDifficulty(activityScore, complexityScore) {
   const combined = activityScore * 0.4 + complexityScore * 0.6;
 
-  if (combined < 25) return { level: "Beginner" };
-  if (combined < 50) return { level: "Intermediate" };
-  if (combined < 75) return { level: "Advanced" };
-  return { level: "Expert" };
+  if (combined < 25) return { level: "Beginner", combined };
+  if (combined < 50) return { level: "Intermediate", combined };
+  if (combined < 75) return { level: "Advanced", combined };
+  return { level: "Expert", combined };
 }
 
-// ─── MAIN ─────────────────────────────────────────────────────────────────────
+//  MAIN
 
 async function analyzeRepo() {
-  console.log(`\n🔍 Analyzing: ${OWNER}/${REPO}\n${"─".repeat(50)}`);
+  console.log(`\nAnalyzing: ${OWNER}/${REPO}\n${"─".repeat(50)}`);
 
   // Fetch all data in parallel where possible
   const [repoRes, langRes, contribRes, commitsRes] = await Promise.all([
@@ -154,13 +151,13 @@ async function analyzeRepo() {
   ]);
 
   if (repoRes.status === 404) {
-    console.error(`❌ Repository "${REPO_INPUT}" not found.`);
+    console.error(`Repository "${REPO_INPUT}" not found.`);
     process.exit(1);
   }
 
   if (repoRes.status === 403) {
     console.error(
-      `❌ Rate limit hit. Set GITHUB_TOKEN environment variable and try again.`
+      `Rate limit hit. Set GITHUB_TOKEN environment variable and try again.`
     );
     process.exit(1);
   }
@@ -193,7 +190,7 @@ async function analyzeRepo() {
     (Date.now() - new Date(repo.pushed_at).getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  //  OUTPUT REPORT 
+  //  OUTPUT REPORT
   console.log(`
  Repository     : ${repo.full_name}
  Description    : ${repo.description || "N/A"}

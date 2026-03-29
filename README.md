@@ -22,6 +22,8 @@ The design document covers:
 
 See: [`task2-analyzer/analyzer.js`](./task2-analyzer/analyzer.js)
 
+See: [`task2-analyzer/index.html`](./task2-analyzer/index.html) — browser-based frontend for the same analyzer
+
 ### What it does
 
 A Node.js CLI tool that analyzes any GitHub repository and generates three scores:
@@ -43,35 +45,38 @@ node analyzer.js c2siorg/Webiu
 GITHUB_TOKEN=your_token node analyzer.js c2siorg/Webiu
 ```
 
-### Sample output
+### Sample output (node analyzer.js c2siorg/Webiu)
 
 ```
-🔍 Analyzing: c2siorg/Webiu
+Analyzing: c2siorg/Webiu
 ──────────────────────────────────────────────────
 
-📦 Repository     : c2siorg/Webiu
-📝 Description    : Dynamic organization website fetching real-time GitHub data
-⭐ Stars          : 87
-🍴 Forks          : 134
-🐛 Open Issues    : 23
-👥 Contributors   : 28
-📅 Last Push      : 2 day(s) ago
-🔤 Languages      : JavaScript (44.1%), TypeScript (29.4%), CSS (11.8%), HTML (7.8%)
-📏 Repo Size      : 12.1 MB
-🔄 Commits (30d)  : 18
+ Repository     : c2siorg/Webiu
+ Description    : WebiU 2.0 is a web application designed to provide a visually
+                  appealing and intuitive interface for C2SI and SCoRe Lab.
+ Stars          : 39
+ Forks          : 111
+ Open Issues    : 180
+ Contributors   : 33
+ Last Push      : 25 day(s) ago
+ Languages      : TypeScript (66.5%), SCSS (19.6%), HTML (13.0%), JavaScript (0.7%), Dockerfile (0.1%)
+ Topics         : None
+ Repo Size      : 11.0 MB
+ Commits (30d)  : 8
+ License        : None
 
 ──────────────────────────────────────────────────
-📊 ANALYSIS RESULTS
+ ANALYSIS RESULTS
 ──────────────────────────────────────────────────
 
-  🚀 Activity Score      : 84/100
-     [█████████████████░░░] 84%
+   Activity Score      : 64/100
+     [█████████████░░░░░░░] 64%
 
-  🧠 Complexity Score    : 44/100
-     [█████████░░░░░░░░░░░] 44%
+   Complexity Score    : 49/100
+     [██████████░░░░░░░░░░] 49%
 
-  🎓 Learning Difficulty : 🟠 Advanced
-     (Combined Score: 60.0/100)
+   Learning Difficulty : Advanced
+     (Combined Score: 55.0/100)
 
 ──────────────────────────────────────────────────
 ```
@@ -79,20 +84,20 @@ GITHUB_TOKEN=your_token node analyzer.js c2siorg/Webiu
 ### Scoring methodology
 
 **Activity Score** (weights):
-- Stars → 20% (capped at 1000 stars for max score)
-- Forks → 15%
-- Open Issues → 10% (engagement signal)
-- Recent commits (30 days) → 35%
-- Days since last push → 20%
+- Stars → 20% (max score reached at 50 stars)
+- Forks → 15% (max score reached at 20 forks)
+- Open Issues → 10% (treated as an engagement signal)
+- Recent commits (last 30 days) → 35% (max score reached at 30 commits)
+- Days since last push → 20% (graded: within 7 days full points, within 30 days partial, within 90 days minimal)
 
 **Complexity Score** (weights):
-- Language count → 25%
-- Codebase size → 25%
-- Contributor count → 20%
-- Open issues → 15%
-- Topics count → 15%
+- Language count → 25% (max score reached at 8 languages)
+- Codebase size → 25% (max score reached at 50MB)
+- Contributor count → 20% (max score reached at 50 contributors)
+- Open issues → 15% (max score reached at 50 issues)
+- Topics count → 15% (max score reached at 10 topics)
 
-**Learning Difficulty**:
+**Learning Difficulty:**
 ```
 Combined = (Activity × 0.4) + (Complexity × 0.6)
 
