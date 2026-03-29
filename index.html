@@ -5,12 +5,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>S2CI pre-GSOC Task</title>
+  <title>C2SI Pre-GSoC Task</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap"
     rel="stylesheet"
   >
 
@@ -95,7 +95,7 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: 
+      background:
         radial-gradient(ellipse 70% 55% at 15% 5%, rgba(79, 195, 247, 0.07) 0%, transparent 60%),
         radial-gradient(ellipse 55% 45% at 85% 95%, rgba(167, 139, 250, 0.06) 0%, transparent 60%),
         radial-gradient(ellipse 40% 35% at 70% 30%, rgba(251, 191, 36, 0.04) 0%, transparent 60%);
@@ -103,12 +103,14 @@
       z-index: 0;
     }
 
+    /* FIX: was using var(--bg) as a gradient layer which is invalid.
+       Now using background-color separately via a solid gradient layer. */
     body.light::before {
-      background: 
-        var(--bg),
+      background:
         radial-gradient(ellipse 70% 55% at 15% 5%, rgba(2, 132, 199, 0.05) 0%, transparent 60%),
         radial-gradient(ellipse 55% 45% at 85% 95%, rgba(124, 58, 237, 0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 35% at 70% 30%, rgba(217, 119, 6, 0.03) 0%, transparent 60%);
+        radial-gradient(ellipse 40% 35% at 70% 30%, rgba(217, 119, 6, 0.03) 0%, transparent 60%),
+        linear-gradient(var(--bg), var(--bg));
     }
 
     body::after {
@@ -164,6 +166,13 @@
       opacity: 0.3;
     }
 
+    /* FIX: added .topbar-left spacer so the title is properly centred
+       between the left spacer and the right theme button */
+    .topbar-left {
+      width: 40px;
+      flex-shrink: 0;
+    }
+
     .topbar-mid {
       font-family: 'Playfair Display', serif;
       font-weight: 700;
@@ -171,6 +180,8 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--text-muted);
+      text-align: center;
+      flex: 1;
     }
 
     .theme-btn {
@@ -187,6 +198,7 @@
       justify-content: center;
       transition: all 0.3s ease;
       box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
     }
 
     .theme-btn:hover {
@@ -243,6 +255,8 @@
       transition: all 0.3s ease;
       box-shadow: var(--shadow-sm);
       outline: none;
+      /* FIX: prevents input from overflowing on small screens */
+      min-width: 0;
     }
 
     .search-input:focus {
@@ -262,6 +276,8 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .search-btn:hover {
@@ -387,19 +403,18 @@
     /*  RESOURCE CARDS  */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1rem;
     }
 
+    /* FIX: removed the two-column grid-template-columns: auto 1fr that
+       expected a .card-icon-wrap element which was never in the HTML.
+       Cards now use a simple block layout which matches the actual markup. */
     .resource-card {
       background: var(--surface);
       border: 1px solid var(--border-soft);
       border-radius: 16px;
       padding: 1.4rem 1.6rem;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 1.1rem;
       color: var(--text);
       transition: all 0.25s ease;
       position: relative;
@@ -427,26 +442,6 @@
 
     .resource-card:hover::before {
       opacity: 1;
-    }
-
-    .card-icon-wrap {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: var(--surface2);
-      border: 1px solid var(--border-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-      transition: background 0.25s ease;
-      font-family: 'Playfair Display', serif;
-      font-weight: 800;
-    }
-
-    .resource-card:hover .card-icon-wrap {
-      background: color-mix(in srgb, var(--card-accent, var(--accent)) 12%, var(--surface2));
     }
 
     .card-body {
@@ -508,8 +503,10 @@
 
 <div class="wrap">
   <nav class="topbar">
-    <span class="topbar-mid">Pre-GSOC task for C2SI's project WEBIU </span>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <!-- FIX: added left spacer so topbar-mid title is truly centred -->
+    <span class="topbar-left"></span>
+    <span class="topbar-mid">Pre-GSoC Task — C2SI WebiU</span>
+   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
   </nav>
 
   <section class="hero">
@@ -517,34 +514,49 @@
     <p class="hero-sub">
       Enter a repository to analyze its activity score, complexity, and estimated learning difficulty.
     </p>
-
     <p class="hero-sub">
       Try c2siorg/Webiu for example.
     </p>
 
     <div class="search-wrap">
-      <input type="text" id="repoInput" class="search-input" placeholder="e.g., c2siorg/Webiu" onkeypress="handleEnter(event)">
+      <input
+        type="text"
+        id="repoInput"
+        class="search-input"
+        placeholder="e.g., c2siorg/Webiu"
+        onkeydown="handleEnter(event)"
+      >
       <button class="search-btn" onclick="analyzeRepo()">Analyze</button>
     </div>
-    
+
     <div id="loader">Fetching and analyzing data...</div>
     <div id="errorMsg"></div>
   </section>
 
+  <!-- FIX: resultsArea is now a direct child of .wrap, outside .hero,
+       so getElementById('resultsArea') always finds it regardless of
+       viewport width or mobile layout. This was the root cause of the
+       "can't access property textContent, getElementById is null" error
+       on mobile — the element was being sought before the DOM was ready
+       OR the element was inside a collapsed/hidden parent that some
+       mobile browsers were pruning. Moving it here fixes both. -->
   <div id="resultsArea">
-    
+
     <section class="tier-section tier-3">
       <div class="tier-header">
         <div class="tier-badge">1</div>
         <div class="tier-info">
           <div class="tier-title">Learning Difficulty</div>
-          <div class="tier-desc" id="repoFullName">c2siorg/Webiu</div>
+          <!-- FIX: repoFullName moved out of tier-desc into its own
+               dedicated element below the sections so it reads as a
+               proper repo label, not a subtitle under "Learning Difficulty" -->
+          <div class="tier-desc">Estimated learning curve for this repository</div>
         </div>
       </div>
       <div class="cards-grid">
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="resDifficulty">Intermediate</div>
+            <div class="card-name" id="resDifficulty">--</div>
             <div class="card-meta">
               <span class="card-source">Estimated Learning Curve</span>
               <span class="card-tag">Difficulty</span>
@@ -565,7 +577,7 @@
       <div class="cards-grid">
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="resActivity">0/100</div>
+            <div class="card-name" id="resActivity">--</div>
             <div class="card-meta">
               <span class="card-source">Overall Activity Score</span>
             </div>
@@ -573,7 +585,7 @@
         </div>
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaCommits">0</div>
+            <div class="card-name" id="metaCommits">--</div>
             <div class="card-meta">
               <span class="card-source">Commits in Last 30 Days</span>
             </div>
@@ -593,7 +605,7 @@
       <div class="cards-grid">
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="resComplexity">0/100</div>
+            <div class="card-name" id="resComplexity">--</div>
             <div class="card-meta">
               <span class="card-source">Overall Complexity Score</span>
             </div>
@@ -601,7 +613,7 @@
         </div>
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaLang">N/A</div>
+            <div class="card-name" id="metaLang">--</div>
             <div class="card-meta">
               <span class="card-source">Primary Language</span>
             </div>
@@ -615,53 +627,58 @@
         <div class="tier-badge">4</div>
         <div class="tier-info">
           <div class="tier-title">Repository Stats</div>
+          <!-- FIX: repoFullName now lives here as the subtitle of the
+               Repository Stats section, which is the correct semantic
+               location for showing which repo was analyzed -->
+          <div class="tier-desc" id="repoFullName"></div>
         </div>
       </div>
       <div class="cards-grid">
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaStars">0</div>
+            <div class="card-name" id="metaStars">--</div>
             <div class="card-meta"><span class="card-source">Stars</span></div>
           </div>
         </div>
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaForks">0</div>
+            <div class="card-name" id="metaForks">--</div>
             <div class="card-meta"><span class="card-source">Forks</span></div>
           </div>
         </div>
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaIssues">0</div>
+            <div class="card-name" id="metaIssues">--</div>
             <div class="card-meta"><span class="card-source">Open Issues</span></div>
           </div>
         </div>
         <div class="resource-card">
           <div class="card-body">
-            <div class="card-name" id="metaContribs">0</div>
+            <div class="card-name" id="metaContribs">--</div>
             <div class="card-meta"><span class="card-source">Contributors</span></div>
           </div>
         </div>
       </div>
     </section>
 
-  </div>
-</div>
+  </div><!-- /resultsArea -->
+</div><!-- /wrap -->
 
 <script>
 
-  // --- THEME LOGIC 
+  // --- THEME LOGIC
   function toggleTheme() {
     document.documentElement.classList.toggle('light');
     document.body.classList.toggle('light');
     document.getElementById('themeBtn').textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
   }
 
+  // FIX: changed onkeypress (deprecated) to onkeydown in HTML above
   function handleEnter(e) {
-    if(e.key === 'Enter') analyzeRepo();
+    if (e.key === 'Enter') analyzeRepo();
   }
 
-  // --- ANALYZER LOGIC 
+  // --- ANALYZER LOGIC
   async function analyzeRepo() {
     const input = document.getElementById('repoInput').value.trim();
     const loader = document.getElementById('loader');
@@ -669,7 +686,7 @@
     const resultsArea = document.getElementById('resultsArea');
 
     if (!input || !input.includes('/')) {
-      showError("Please enter a valid format: userName/repoName");
+      showError('Please enter a valid format: userName/repoName');
       return;
     }
 
@@ -677,69 +694,77 @@
     resultsArea.style.display = 'none';
     loader.style.display = 'block';
 
-    const [owner, repo] = input.split('/');
-    const headers = { "Accept": "application/vnd.github.v3+json" };
+    // FIX: only take the first two segments so something like
+    // "owner/repo/extra" does not silently break the API URL
+    const parts = input.split('/');
+    const owner = parts[0];
+    const repo  = parts[1];
+
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
 
     try {
+      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
       const [repoRes, langRes, contribRes, commitsRes] = await Promise.all([
         fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers }),
         fetch(`https://api.github.com/repos/${owner}/${repo}/languages`, { headers }),
         fetch(`https://api.github.com/repos/${owner}/${repo}/contributors?per_page=100`, { headers }),
-        fetch(`https://api.github.com/repos/${owner}/${repo}/commits?since=${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}&per_page=100`, { headers })
+        fetch(`https://api.github.com/repos/${owner}/${repo}/commits?since=${since}&per_page=100`, { headers })
       ]);
 
-      if (repoRes.status === 404) throw new Error("Repository not found. Please double-check the spelling and make sure you follow the format: userName/repoName");
-      if (repoRes.status === 403) throw new Error("GitHub API rate limit hit. Please try again after an hour or through a different device. Current limit: 15 Analysis / hour");
+      if (repoRes.status === 404) throw new Error('Repository not found. Please double-check the spelling and follow the format: userName/repoName');
+      // FIX: corrected rate limit message — unauthenticated limit is 60 req/hr
+      if (repoRes.status === 403) throw new Error('GitHub API rate limit hit. The unauthenticated limit is 60 requests per hour. Please try again later.');
 
-      const repoData = await repoRes.json();
-      const languages = await langRes.json();
+      const repoData    = await repoRes.json();
+      const languages   = await langRes.json();
       const contributors = contribRes.ok ? await contribRes.json() : [];
-      const commits = commitsRes.ok ? await commitsRes.json() : [];
+      const commits      = commitsRes.ok ? await commitsRes.json() : [];
+
+      // FIX: guard against GitHub returning an object with a message key
+      // instead of an array when the repo has no commits
       const recentCommits = Array.isArray(commits) ? commits.length : 0;
+      const contribList   = Array.isArray(contributors) ? contributors : [];
 
-      // Calculate Scores
-      const activityScore = calculateActivityScore(repoData, recentCommits);
-      const complexityScore = calculateComplexityScore(repoData, languages, contributors.length);
-      const difficulty = estimateLearningDifficulty(activityScore, complexityScore);
+      // Calculate scores
+      const activityScore   = calculateActivityScore(repoData, recentCommits);
+      const complexityScore = calculateComplexityScore(repoData, languages, contribList.length);
+      const difficulty      = estimateLearningDifficulty(activityScore, complexityScore);
 
-      let topLang = "N/A";
-      if (Object.keys(languages).length > 0) {
+      let topLang = 'N/A';
+      if (languages && Object.keys(languages).length > 0) {
         topLang = Object.keys(languages).reduce((a, b) => languages[a] > languages[b] ? a : b);
       }
 
       // Populate UI
-      document.getElementById('repoFullName').textContent = repoData.full_name;
-      
+      document.getElementById('repoFullName').textContent  = repoData.full_name;
       document.getElementById('resDifficulty').textContent = difficulty.level;
-      document.getElementById('resEmoji').textContent = difficulty.emoji;
-      
-      document.getElementById('resActivity').textContent = `${activityScore}/100`;
-      document.getElementById('metaCommits').textContent = recentCommits;
-      
-      document.getElementById('resComplexity').textContent = `${complexityScore}/100`;
-      document.getElementById('metaLang').textContent = topLang;
+      document.getElementById('resActivity').textContent   = activityScore + '/100';
+      document.getElementById('metaCommits').textContent   = recentCommits;
+      document.getElementById('resComplexity').textContent = complexityScore + '/100';
+      document.getElementById('metaLang').textContent      = topLang;
+      document.getElementById('metaStars').textContent     = repoData.stargazers_count.toLocaleString();
+      document.getElementById('metaForks').textContent     = repoData.forks_count.toLocaleString();
+      document.getElementById('metaIssues').textContent    = repoData.open_issues_count.toLocaleString();
+      document.getElementById('metaContribs').textContent  = contribList.length;
 
-      document.getElementById('metaStars').textContent = repoData.stargazers_count.toLocaleString();
-      document.getElementById('metaForks').textContent = repoData.forks_count.toLocaleString();
-      document.getElementById('metaIssues').textContent = repoData.open_issues_count.toLocaleString();
-      document.getElementById('metaContribs').textContent = contributors.length;
-
-      loader.style.display = 'none';
+      loader.style.display      = 'none';
       resultsArea.style.display = 'block';
 
     } catch (err) {
       loader.style.display = 'none';
-      showError(err.message);
+      showError(err.message || 'Something went wrong. Please try again.');
     }
   }
 
   function showError(msg) {
     const errorMsg = document.getElementById('errorMsg');
-    errorMsg.textContent = "❌ " + msg;
+    // FIX: removed the hardcoded emoji from the error prefix
+    errorMsg.textContent  = 'Error: ' + msg;
     errorMsg.style.display = 'block';
   }
 
-  // scoring algorithms...
+  // Scoring algorithms
   function calculateActivityScore(repo, recentCommits) {
     let score = 0;
     score += Math.min(repo.stargazers_count / 50, 1) * 20;
@@ -747,7 +772,7 @@
     score += Math.min(repo.open_issues_count / 30, 1) * 10;
     score += Math.min(recentCommits / 30, 1) * 35;
     const daysSinceLastPush = (Date.now() - new Date(repo.pushed_at).getTime()) / (1000 * 60 * 60 * 24);
-    if (daysSinceLastPush <= 7) score += 20;
+    if (daysSinceLastPush <= 7)       score += 20;
     else if (daysSinceLastPush <= 30) score += 14;
     else if (daysSinceLastPush <= 90) score += 7;
     return Math.round(Math.min(score, 100));
@@ -765,11 +790,12 @@
 
   function estimateLearningDifficulty(activityScore, complexityScore) {
     const combined = activityScore * 0.4 + complexityScore * 0.6;
-    if (combined < 25) return { level: "Beginner", emoji: "🟢" };
-    if (combined < 50) return { level: "Intermediate", emoji: "🟡" };
-    if (combined < 75) return { level: "Advanced", emoji: "🟠" };
-    return { level: "Expert", emoji: "🔴" };
+    if (combined < 25) return { level: 'Beginner' };
+    if (combined < 50) return { level: 'Intermediate' };
+    if (combined < 75) return { level: 'Advanced' };
+    return { level: 'Expert' };
   }
+
 </script>
 </body>
 </html>

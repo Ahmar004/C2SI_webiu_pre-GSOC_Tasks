@@ -1,9 +1,9 @@
 /**
  * GitHub Repository Intelligence Analyzer
  * Pre-GSoC Task 2 — WebiU / C2SI
- * Author: Ahmar Ali | github.com/Ahmar004
+ * Author: Ahmar Ali, github.com/Ahmar004
  *
- * Analyzes a GitHub repository and generates:
+ * This Analyzes a GitHub repository and generates:
  *  - Activity Score
  *  - Project Complexity Score
  *  - Estimated Learning Difficulty
@@ -11,7 +11,7 @@
 
 const https = require("https");
 
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
+//  CONFIG 
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || ""; // optional but recommended
 const REPO_INPUT = process.argv[2]; // e.g. "c2siorg/Webiu"
@@ -25,7 +25,7 @@ if (!REPO_INPUT || !REPO_INPUT.includes("/")) {
 
 const [OWNER, REPO] = REPO_INPUT.split("/");
 
-// ─── GITHUB API HELPER ───────────────────────────────────────────────────────
+//  GITHUB API HELPER 
 
 function githubRequest(path) {
   return new Promise((resolve, reject) => {
@@ -57,12 +57,14 @@ function githubRequest(path) {
   });
 }
 
-// ─── SCORING FUNCTIONS ───────────────────────────────────────────────────────
+//  SCORING FUNCTIONS 
 
 /**
  * ACTIVITY SCORE (0–100)
  * Based on: recent commits, open issues, stars, forks, last push date
  */
+
+
 function calculateActivityScore(repo, recentCommits) {
   let score = 0;
 
@@ -89,10 +91,13 @@ function calculateActivityScore(repo, recentCommits) {
   return Math.round(Math.min(score, 100));
 }
 
+
 /**
  * COMPLEXITY SCORE (0–100)
  * Based on: language count, codebase size, open issues, contributors, topics
  */
+
+
 function calculateComplexityScore(repo, languages, contributors) {
   let score = 0;
 
@@ -115,17 +120,20 @@ function calculateComplexityScore(repo, languages, contributors) {
   return Math.round(Math.min(score, 100));
 }
 
+
 /**
  * LEARNING DIFFICULTY (derived from activity + complexity)
  * Returns: Beginner / Intermediate / Advanced / Expert
  */
+
+
 function estimateLearningDifficulty(activityScore, complexityScore) {
   const combined = activityScore * 0.4 + complexityScore * 0.6;
 
-  if (combined < 25) return { level: "Beginner", emoji: "🟢", combined };
-  if (combined < 50) return { level: "Intermediate", emoji: "🟡", combined };
-  if (combined < 75) return { level: "Advanced", emoji: "🟠", combined };
-  return { level: "Expert", emoji: "🔴", combined };
+  if (combined < 25) return { level: "Beginner" };
+  if (combined < 50) return { level: "Intermediate" };
+  if (combined < 75) return { level: "Advanced" };
+  return { level: "Expert" };
 }
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
@@ -185,32 +193,32 @@ async function analyzeRepo() {
     (Date.now() - new Date(repo.pushed_at).getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  // ─── OUTPUT REPORT ──────────────────────────────────────────────────────────
+  //  OUTPUT REPORT 
   console.log(`
-📦 Repository     : ${repo.full_name}
-📝 Description    : ${repo.description || "N/A"}
-⭐ Stars          : ${repo.stargazers_count.toLocaleString()}
-🍴 Forks          : ${repo.forks_count.toLocaleString()}
-🐛 Open Issues    : ${repo.open_issues_count}
-👥 Contributors   : ${contributors.length}
-📅 Last Push      : ${daysSince} day(s) ago
-🔤 Languages      : ${topLanguages.join(", ") || "N/A"}
-📌 Topics         : ${repo.topics?.join(", ") || "None"}
-📏 Repo Size      : ${(repo.size / 1024).toFixed(1)} MB
-🔄 Commits (30d)  : ${recentCommits}
-📄 License        : ${repo.license?.name || "None"}
+ Repository     : ${repo.full_name}
+ Description    : ${repo.description || "N/A"}
+ Stars          : ${repo.stargazers_count.toLocaleString()}
+ Forks          : ${repo.forks_count.toLocaleString()}
+ Open Issues    : ${repo.open_issues_count}
+ Contributors   : ${contributors.length}
+ Last Push      : ${daysSince} day(s) ago
+ Languages      : ${topLanguages.join(", ") || "N/A"}
+ Topics         : ${repo.topics?.join(", ") || "None"}
+ Repo Size      : ${(repo.size / 1024).toFixed(1)} MB
+ Commits (30d)  : ${recentCommits}
+ License        : ${repo.license?.name || "None"}
 
 ${"─".repeat(50)}
-📊 ANALYSIS RESULTS
+ ANALYSIS RESULTS
 ${"─".repeat(50)}
 
-  🚀 Activity Score      : ${activityScore}/100
+   Activity Score      : ${activityScore}/100
      ${renderBar(activityScore)}
 
-  🧠 Complexity Score    : ${complexityScore}/100
+   Complexity Score    : ${complexityScore}/100
      ${renderBar(complexityScore)}
 
-  🎓 Learning Difficulty : ${difficulty.emoji} ${difficulty.level}
+   Learning Difficulty : ${difficulty.level}
      (Combined Score: ${difficulty.combined.toFixed(1)}/100)
 
 ${"─".repeat(50)}
