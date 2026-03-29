@@ -689,7 +689,7 @@
       ]);
 
       if (repoRes.status === 404) throw new Error("Repository not found. Please double-check the spelling and make sure you follow the format: userName/repoName");
-      if (repoRes.status === 403) throw new Error("GitHub API rate limit hit. Please try again later.");
+      if (repoRes.status === 403) throw new Error("GitHub API rate limit hit. Please try again after an hour or through a different device. Current limit: 15 Analysis / hour");
 
       const repoData = await repoRes.json();
       const languages = await langRes.json();
